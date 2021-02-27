@@ -14,19 +14,19 @@ import styles from "../styles/pages/Home.module.css";
 
 type HomeProps = {
   level: number;
-  currentExpirience: number;
+  currentExperience: number;
   challengesCompleted: number;
 };
 
 export default function Home({
   level,
-  currentExpirience,
+  currentExperience,
   challengesCompleted,
 }: HomeProps) {
   return (
     <ChallengesProvider
       level={level}
-      currentExpirience={currentExpirience}
+      currentExperience={currentExperience}
       challengesCompleted={challengesCompleted}
     >
       <Head>
@@ -60,7 +60,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       level: Number(level),
-      currentExpirience: Number(currentExperience),
+      currentExperience: Number(currentExperience),
       challengesCompleted: Number(challengesCompleted),
     },
   };
