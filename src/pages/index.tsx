@@ -1,28 +1,67 @@
-import { CompletedChallenges } from "../components/CompletedChallengs";
-import { Countdown } from "../components/Countdown";
-import { ExperienceBar } from "../components/ExperienceBar";
-import { Profile } from "../components/Profile";
-import styles from "../styles/pages/Home.module.css";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 
-export default function Home() {
+import { ExperienceBar } from "../components/ExperienceBar";
+import { Profile } from "../components/Profile";
+import { CompletedChallenges } from "../components/CompletedChallenges";
+import { Countdown } from "../components/Countdown";
+import { ChallengerBox } from "../components/ChallengerBox";
+
+import { ChallengesProvider } from "../contexts/ChallengeContext";
+import { CountdownProvider } from "../contexts/CountdownContext";
+
+import styles from "../styles/pages/Home.module.css";
+
+type HomeProps = {
+  level: number;
+  currentExpirience: number;
+  challengesCompleted: number;
+};
+
+export default function Home({
+  level,
+  currentExpirience,
+  challengesCompleted,
+}: HomeProps) {
   return (
-    <div className={styles.container}>
+    <ChallengesProvider
+      level={level}
+      currentExpirience={currentExpirience}
+      challengesCompleted={challengesCompleted}
+    >
       <Head>
-        <title> Início| MovieIt</title>
+        <title>Início | move.it</title>
       </Head>
 
-      <ExperienceBar />
-      <section>
-        <div>
-          <Profile />
-          <CompletedChallenges />
-          <Countdown />
-        </div>
-        <div>
-          
-        </div>
-      </section>
-    </div>
+      <div className={styles.container}>
+        <ExperienceBar />
+
+        <CountdownProvider>
+          <section>
+            <div>
+              <Profile />
+              <CompletedChallenges />
+              <Countdown />
+            </div>
+
+            <div>
+              <ChallengerBox />
+            </div>
+          </section>
+        </CountdownProvider>
+      </div>
+    </ChallengesProvider>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { level, currentExperience, challengesCompleted } = ctx.req.cookies;
+
+  return {
+    props: {
+      level: Number(level),
+      currentExpirience: Number(currentExperience),
+      challengesCompleted: Number(challengesCompleted),
+    },
+  };
+};
